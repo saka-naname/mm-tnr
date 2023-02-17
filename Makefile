@@ -13,6 +13,8 @@ DEFAULT_GOARCH := $(shell go env GOARCH)
 
 export GO111MODULE=on
 
+include .env
+
 # You can include assets this directory into the bundle. This can be e.g. used to include profile pictures.
 ASSETS_DIR ?= assets
 
@@ -135,7 +137,7 @@ dist:	server webapp bundle
 ## Builds and installs the plugin to a server.
 .PHONY: deploy
 deploy: dist
-	./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
+	@export MM_SERVICESETTINGS_SITEURL=${MM_SERVICESETTINGS_SITEURL} && export MM_ADMIN_USERNAME=${MM_ADMIN_USERNAME} && export MM_ADMIN_PASSWORD=${MM_ADMIN_PASSWORD} && ./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
 
 ## Builds and installs the plugin to a server, updating the webapp automatically when changed.
 .PHONY: watch
@@ -149,7 +151,7 @@ endif
 ## Installs a previous built plugin with updated webpack assets to a server.
 .PHONY: deploy-from-watch
 deploy-from-watch: bundle
-	./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
+	@export MM_SERVICESETTINGS_SITEURL=${MM_SERVICESETTINGS_SITEURL} && export MM_ADMIN_USERNAME=${MM_ADMIN_USERNAME} && export MM_ADMIN_PASSWORD=${MM_ADMIN_PASSWORD} && ./build/bin/pluginctl deploy $(PLUGIN_ID) dist/$(BUNDLE_NAME)
 
 ## Setup dlv for attaching, identifying the plugin PID for other targets.
 .PHONY: setup-attach
